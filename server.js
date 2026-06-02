@@ -19,7 +19,9 @@ const DATABASE_URL = process.env.DATABASE_URL ||
   'postgresql://flowmoney_user:X30SmduHBseIoW7hQs5LJdFSBPIs9vT5@dpg-d8f8escm0tmc73en52s0-a.oregon-postgres.render.com:5432/flowmoney';
 
 const { Pool } = require('pg');
-const pool = new Pool({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
+// Internal Render connections don't use SSL; external ones do
+const useSSL = DATABASE_URL.includes('.render.com');
+const pool = new Pool({ connectionString: DATABASE_URL, ...(useSSL ? { ssl: { rejectUnauthorized: false } } : {}) });
 
 async function initDB() {
   await pool.query(`
