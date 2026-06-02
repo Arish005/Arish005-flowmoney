@@ -69,6 +69,16 @@ const db = {
   async reset()        { await pool.query('DELETE FROM entries'); await pool.query('DELETE FROM settings'); },
 };
 
+// ─── DEBUG ────────────────────────────────────────────────────────────────────
+app.get('/api/ping', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ ok: true, db: DATABASE_URL.replace(/:([^:@]+)@/, ':***@') });
+  } catch(e) {
+    res.status(500).json({ error: e.message, code: e.code, detail: e.detail });
+  }
+});
+
 // ─── SERVE INDEX ─────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
