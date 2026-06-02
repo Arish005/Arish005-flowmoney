@@ -68,6 +68,9 @@ const db = {
   async reset()        { await pool.query('DELETE FROM entries'); await pool.query('DELETE FROM settings'); },
 };
 
+// ─── SERVE INDEX ─────────────────────────────────────────────────────────────
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+
 // ─── API ROUTES ───────────────────────────────────────────────────────────────
 app.get   ('/api/data',                async (req,res) => { try{res.json(await db.getData())}              catch(e){res.status(500).json({error:e.message})} });
 app.post  ('/api/settings',            async (req,res) => { try{await db.saveSettings(req.body);res.json({ok:true})} catch(e){res.status(500).json({error:e.message})} });
